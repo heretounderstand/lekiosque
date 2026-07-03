@@ -531,6 +531,23 @@ summary:focus-visible {
   margin-top: 0.7rem;
 }
 
+.credit {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.03em;
+  margin-top: 0.55rem;
+  padding-top: 0.55rem;
+  border-top: 1px dotted var(--trait);
+}
+
+.credit a {
+  color: var(--bleu);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.credit a:hover { color: var(--rouge); }
+
 /* ============ RESPONSIVE & ACCESSIBILITÉ ============ */
 
 @media (max-width: 480px) {

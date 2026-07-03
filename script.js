@@ -933,11 +933,12 @@ if (typeof document !== 'undefined') {
     texte += `🔢 La Suite : ${etatJour.suite.resolu ? `✅ ${etatJour.suite.essais.length}/3` : etatJour.suite.rate ? '❌ ratée' : '⬜ pas encore'}\n`;
     texte += `🁢 La Grille : ${etatJour.takuzu.resolu ? '✅ résolue' : '⬜ pas encore'}\n`;
     if (stats.streak > 0) texte += `🔥 Série : ${stats.streak} jour${stats.streak > 1 ? 's' : ''}\n`;
-    texte += `Trois jeux neufs chaque matin.`;
+    texte += `Trois jeux neufs chaque matin →`;
 
     try {
-      if (navigator.share) await navigator.share({ title: 'Le Kiosque', text: texte });
-      else {
+      if (navigator.share) {
+        await navigator.share({ title: 'Le Kiosque', text: texte, url: 'https://lekiosque.netlify.app' });
+      } else {
         await navigator.clipboard.writeText(texte);
         this.textContent = 'Copié ✓';
         setTimeout(() => { this.textContent = 'Partager mon édition'; }, 2000);
