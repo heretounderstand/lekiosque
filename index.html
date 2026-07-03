@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le Kiosque — Trois jeux neufs chaque matin</title>
+  <meta name="description" content="Une édition quotidienne de trois jeux de logique — la même pour tous les joueurs, renouvelée chaque jour à minuit.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <div class="page">
+
+    <!-- ══════════ MANCHETTE ══════════ -->
+    <header class="manchette">
+      <div class="manchette-haut">
+        <span id="edition-num">N° —</span>
+        <span>Quotidien de jeux</span>
+        <span>Gratuit</span>
+      </div>
+      <h1 class="titre">LE KIOSQUE</h1>
+      <p class="devise">Trois jeux neufs chaque matin — les mêmes pour tout le monde, partout.</p>
+      <div class="manchette-bas">
+        <span id="edition-date">—</span>
+        <span id="streak">Série : —</span>
+        <span id="compte-a-rebours">—</span>
+      </div>
+    </header>
+
+    <!-- ══════════ RUBRIQUES ══════════ -->
+    <nav class="rubriques" role="tablist" aria-label="Les trois jeux du jour">
+      <button class="rubrique active" role="tab" aria-selected="true" data-jeu="cible">
+        <span class="rubrique-num">I.</span>
+        <span class="rubrique-nom">La Cible</span>
+        <span class="rubrique-genre">calcul mental</span>
+        <span class="statut">·</span>
+      </button>
+      <button class="rubrique" role="tab" aria-selected="false" data-jeu="suite">
+        <span class="rubrique-num">II.</span>
+        <span class="rubrique-nom">La Suite</span>
+        <span class="rubrique-genre">logique</span>
+        <span class="statut">·</span>
+      </button>
+      <button class="rubrique" role="tab" aria-selected="false" data-jeu="takuzu">
+        <span class="rubrique-num">III.</span>
+        <span class="rubrique-nom">La Grille</span>
+        <span class="rubrique-genre">déduction</span>
+        <span class="statut">·</span>
+      </button>
+    </nav>
+
+    <main>
+
+      <!-- ══════════ I. LA CIBLE ══════════ -->
+      <section id="panneau-cible" class="panneau" role="tabpanel">
+        <details class="regles">
+          <summary>Comment jouer</summary>
+          <p>Atteignez exactement le nombre cible en combinant les six plaques avec
+          +, −, × et ÷. Chaque plaque ne sert qu'une fois, mais chaque résultat devient
+          une nouvelle plaque. Seuls les résultats entiers et positifs sont acceptés.
+          La cible du jour est toujours atteignable.</p>
+        </details>
+
+        <div class="zone-jeu">
+          <div class="cible-bloc">
+            <span class="cible-etiquette">Cible du jour</span>
+            <span id="cible-nombre" class="cible-nombre">—</span>
+          </div>
+
+          <div id="cible-plaques" class="plaques"></div>
+
+          <div id="cible-operateurs" class="operateurs">
+            <button data-op="+">+</button>
+            <button data-op="-">−</button>
+            <button data-op="×">×</button>
+            <button data-op="÷">÷</button>
+          </div>
+
+          <p id="cible-message" class="message" aria-live="polite"></p>
+
+          <div id="cible-historique" class="historique"></div>
+
+          <div class="actions">
+            <button id="cible-annuler" class="btn-secondaire">Annuler le dernier coup</button>
+            <button id="cible-reset" class="btn-secondaire">Tout recommencer</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════ II. LA SUITE ══════════ -->
+      <section id="panneau-suite" class="panneau hidden" role="tabpanel">
+        <details class="regles">
+          <summary>Comment jouer</summary>
+          <p>Cinq nombres suivent une règle cachée. Trouvez le sixième en trois essais
+          maximum. Après chaque erreur, un indice vous rapproche de la réponse.</p>
+        </details>
+
+        <div class="zone-jeu">
+          <div id="suite-termes" class="termes"></div>
+
+          <div class="suite-saisie">
+            <input id="suite-input" type="number" inputmode="numeric"
+                   placeholder="Votre réponse" aria-label="Votre réponse">
+            <button id="suite-valider" class="btn-principal">Valider</button>
+          </div>
+
+          <div id="suite-essais" class="essais" aria-label="Essais restants"></div>
+          <p id="suite-message" class="message" aria-live="polite">Trois essais pour percer la règle.</p>
+        </div>
+      </section>
+
+      <!-- ══════════ III. LA GRILLE ══════════ -->
+      <section id="panneau-takuzu" class="panneau hidden" role="tabpanel">
+        <details class="regles">
+          <summary>Comment jouer</summary>
+          <p>Remplissez la grille de pions bleus et rouges. Trois règles :
+          chaque ligne et chaque colonne contient autant de bleus que de rouges ;
+          jamais trois pions identiques côte à côte ;
+          deux lignes (ou deux colonnes) ne peuvent pas être identiques.
+          Touchez une case pour alterner bleu → rouge → vide.
+          La solution du jour est unique.</p>
+        </details>
+
+        <div class="zone-jeu">
+          <div id="takuzu-grille" class="grille" role="grid" aria-label="Grille Takuzu 6 par 6"></div>
+          <p id="takuzu-message" class="message" aria-live="polite">Les cases marquées d'un coin sont imposées.</p>
+          <div class="actions">
+            <button id="takuzu-verifier" class="btn-principal">Vérifier mes pions</button>
+            <button id="takuzu-effacer" class="btn-secondaire">Effacer mes coups</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ══════════ PIED DE PAGE ══════════ -->
+    <footer class="pied">
+      <button id="btn-partager" class="btn-principal">Partager mon édition</button>
+      <p class="colophon">La même édition pour tous les joueurs, chaque jour à minuit.
+      Rendez-vous demain pour la suivante.</p>
+    </footer>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,549 @@
+/* ============================================================
+   LE KIOSQUE — esthétique risographe
+   Deux encres (bleu + rouge) sur papier journal.
+   ============================================================ */
+
+:root {
+  --papier: #FAF5E9;
+  --papier-fonce: #F0E8D5;
+  --encre: #221E33;
+  --bleu: #2B3FBF;
+  --bleu-pale: #DDE1F6;
+  --rouge: #E0432A;
+  --rouge-pale: #F9DFD9;
+  --trait: #C9BFA6;
+
+  --display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --texte: 'Instrument Sans', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--texte);
+  background: var(--papier);
+  color: var(--encre);
+  line-height: 1.55;
+  min-height: 100vh;
+}
+
+/* Grain de papier — la texture risographe */
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 3rem;
+}
+
+.hidden { display: none !important; }
+
+/* ============ MANCHETTE ============ */
+
+.manchette {
+  text-align: center;
+  border-bottom: 3px solid var(--encre);
+  padding-bottom: 0.9rem;
+  margin-bottom: 1.1rem;
+}
+
+.manchette-haut,
+.manchette-bas {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.manchette-haut {
+  border-top: 1.5px solid var(--encre);
+  border-bottom: 1.5px solid var(--encre);
+  padding: 0.35rem 0.15rem;
+}
+
+.manchette-haut span:first-child { color: var(--rouge); }
+
+.titre {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(3rem, 13vw, 5.4rem);
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  margin: 0.55rem 0 0.1rem;
+  /* Effet risographe : la couche rouge légèrement décalée sous l'encre */
+  color: var(--encre);
+  text-shadow: 3px 3px 0 var(--rouge-pale), 5px 5px 0 var(--bleu-pale);
+}
+
+.devise {
+  font-size: 0.92rem;
+  font-style: italic;
+  color: var(--encre);
+  opacity: 0.75;
+  margin-bottom: 0.7rem;
+}
+
+.manchette-bas {
+  border-top: 1.5px solid var(--encre);
+  padding-top: 0.4rem;
+  justify-content: center;
+  column-gap: 1.4rem;
+}
+
+#streak { color: var(--rouge); }
+#compte-a-rebours { color: var(--bleu); font-variant-numeric: tabular-nums; }
+
+/* ============ RUBRIQUES (onglets) ============ */
+
+.rubriques {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1.1rem;
+}
+
+.rubrique {
+  font-family: var(--texte);
+  background: var(--papier);
+  border: 2px solid var(--encre);
+  border-radius: 2px;
+  padding: 0.55rem 0.6rem 0.5rem;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas: "num nom statut" "num genre statut";
+  column-gap: 0.5rem;
+  align-items: center;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  box-shadow: 3px 3px 0 var(--trait);
+  color: var(--encre);
+}
+
+.rubrique:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--trait); }
+
+.rubrique.active {
+  background: var(--encre);
+  color: var(--papier);
+  box-shadow: 3px 3px 0 var(--rouge);
+}
+
+.rubrique-num {
+  grid-area: num;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 1.25rem;
+}
+
+.rubrique-nom {
+  grid-area: nom;
+  font-weight: 600;
+  font-size: 0.92rem;
+  line-height: 1.15;
+}
+
+.rubrique-genre {
+  grid-area: genre;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  opacity: 0.65;
+}
+
+.statut {
+  grid-area: statut;
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 1rem;
+}
+.statut.ok { color: var(--bleu); }
+.rubrique.active .statut.ok { color: var(--bleu-pale); }
+.statut.rate { color: var(--rouge); }
+
+/* ============ PANNEAUX ============ */
+
+.panneau { animation: apparition 0.25s ease; }
+
+@keyframes apparition {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.regles {
+  border: 1.5px dashed var(--trait);
+  border-radius: 2px;
+  padding: 0.55rem 0.8rem;
+  margin-bottom: 0.9rem;
+  font-size: 0.88rem;
+  background: var(--papier-fonce);
+}
+
+.regles summary {
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--bleu);
+}
+
+.regles p { margin-top: 0.5rem; }
+
+.zone-jeu {
+  position: relative;
+  border: 2px solid var(--encre);
+  border-radius: 2px;
+  padding: 1.3rem 1.1rem 1.2rem;
+  background: var(--papier);
+  box-shadow: 4px 4px 0 var(--trait);
+}
+
+.message {
+  font-size: 0.9rem;
+  margin: 0.85rem 0 0.2rem;
+  min-height: 1.4em;
+}
+
+.actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 0.8rem;
+}
+
+/* ============ BOUTONS ============ */
+
+.btn-principal,
+.btn-secondaire {
+  font-family: var(--texte);
+  font-weight: 600;
+  font-size: 0.88rem;
+  border-radius: 2px;
+  padding: 0.55rem 1rem;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.btn-principal {
+  background: var(--bleu);
+  color: var(--papier);
+  border: 2px solid var(--encre);
+  box-shadow: 3px 3px 0 var(--encre);
+}
+
+.btn-principal:hover:not(:disabled) { transform: translate(-1px, -1px); }
+.btn-principal:active:not(:disabled) { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--encre); }
+
+.btn-secondaire {
+  background: transparent;
+  color: var(--encre);
+  border: 2px solid var(--encre);
+}
+
+.btn-secondaire:hover:not(:disabled) { background: var(--papier-fonce); }
+
+button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+button:focus-visible,
+input:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--rouge);
+  outline-offset: 2px;
+}
+
+/* ============ I. LA CIBLE ============ */
+
+.cible-bloc {
+  text-align: center;
+  margin-bottom: 1.1rem;
+}
+
+.cible-etiquette {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--rouge);
+}
+
+.cible-nombre {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(3rem, 11vw, 4.4rem);
+  line-height: 1.05;
+  color: var(--rouge);
+  text-shadow: 2.5px 2.5px 0 var(--bleu-pale);
+}
+
+.plaques {
+  display: flex;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  min-height: 3.4rem;
+}
+
+.plaque {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 1.15rem;
+  background: var(--papier);
+  color: var(--encre);
+  border: 2px solid var(--encre);
+  border-radius: 2px;
+  min-width: 3.2rem;
+  padding: 0.55rem 0.65rem;
+  cursor: pointer;
+  box-shadow: 2.5px 2.5px 0 var(--trait);
+  transition: transform 0.1s ease;
+}
+
+.plaque:hover:not(:disabled) { transform: translateY(-2px); }
+
+.plaque.selectionnee {
+  background: var(--bleu);
+  color: var(--papier);
+  box-shadow: 2.5px 2.5px 0 var(--rouge);
+}
+
+.operateurs {
+  display: flex;
+  gap: 0.55rem;
+  justify-content: center;
+  margin-top: 0.8rem;
+}
+
+.operateurs button {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 1.2rem;
+  width: 2.9rem;
+  height: 2.9rem;
+  background: var(--papier-fonce);
+  border: 2px solid var(--encre);
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--encre);
+  transition: transform 0.1s ease;
+}
+
+.operateurs button:hover:not(:disabled) { transform: scale(1.07); }
+
+.operateurs button.selectionnee {
+  background: var(--rouge);
+  color: var(--papier);
+}
+
+.historique {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  margin-top: 0.4rem;
+}
+
+.ligne-calcul {
+  padding: 0.2rem 0;
+  border-bottom: 1px dotted var(--trait);
+}
+
+/* ============ II. LA SUITE ============ */
+
+.termes {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 1.1rem;
+}
+
+.terme {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 1.2rem;
+  border: 2px solid var(--encre);
+  border-radius: 2px;
+  min-width: 3.1rem;
+  padding: 0.6rem 0.55rem;
+  text-align: center;
+  background: var(--papier);
+  box-shadow: 2.5px 2.5px 0 var(--trait);
+}
+
+.terme.mystere {
+  background: var(--encre);
+  color: var(--papier);
+  box-shadow: 2.5px 2.5px 0 var(--rouge);
+}
+
+.terme.revele-bon { background: var(--bleu); color: var(--papier); }
+.terme.revele-mauvais { background: var(--rouge); color: var(--papier); }
+
+.suite-saisie {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+#suite-input {
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  font-weight: 500;
+  border: 2px solid var(--encre);
+  border-radius: 2px;
+  background: var(--papier);
+  color: var(--encre);
+  padding: 0.5rem 0.75rem;
+  width: 11rem;
+}
+
+.essais {
+  display: flex;
+  gap: 0.45rem;
+  justify-content: center;
+  margin-top: 0.9rem;
+}
+
+.point-essai {
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 2px solid var(--encre);
+  border-radius: 50%;
+  background: var(--papier);
+}
+
+.point-essai.bon { background: var(--bleu); }
+.point-essai.mauvais { background: var(--rouge); }
+
+/* ============ III. LA GRILLE ============ */
+
+.grille {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.4rem;
+  max-width: 340px;
+  margin: 0 auto;
+}
+
+.case {
+  aspect-ratio: 1;
+  border: 2px solid var(--encre);
+  border-radius: 2px;
+  background: var(--papier);
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.08s ease;
+  padding: 0;
+}
+
+.case:hover:not(:disabled) { transform: scale(1.05); }
+
+/* Le pion est un disque encré */
+.case.bleu::after,
+.case.rouge::after {
+  content: '';
+  position: absolute;
+  inset: 18%;
+  border-radius: 50%;
+}
+
+.case.bleu::after { background: var(--bleu); }
+.case.rouge::after { background: var(--rouge); }
+
+/* Coin plié pour les cases imposées */
+.case.donnee {
+  background: var(--papier-fonce);
+  cursor: default;
+}
+
+.case.donnee::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-style: solid;
+  border-width: 0 9px 9px 0;
+  border-color: transparent var(--encre) transparent transparent;
+}
+
+.case.erreur { outline: 3px solid var(--rouge); outline-offset: 1px; }
+
+/* ============ TAMPON — la signature ============ */
+
+.tampon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-9deg) scale(1);
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(2.2rem, 9vw, 3.4rem);
+  letter-spacing: 0.08em;
+  color: var(--rouge);
+  border: 5px double var(--rouge);
+  border-radius: 6px;
+  padding: 0.25rem 1.1rem;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.88;
+  animation: coup-de-tampon 0.35s cubic-bezier(0.2, 1.6, 0.4, 1);
+  z-index: 5;
+  text-transform: uppercase;
+}
+
+@keyframes coup-de-tampon {
+  0% { transform: translate(-50%, -50%) rotate(-9deg) scale(2.4); opacity: 0; }
+  100% { transform: translate(-50%, -50%) rotate(-9deg) scale(1); opacity: 0.88; }
+}
+
+/* ============ PIED DE PAGE ============ */
+
+.pied {
+  text-align: center;
+  margin-top: 1.6rem;
+  border-top: 3px solid var(--encre);
+  padding-top: 1.1rem;
+}
+
+.colophon {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  opacity: 0.65;
+  margin-top: 0.7rem;
+}
+
+/* ============ RESPONSIVE & ACCESSIBILITÉ ============ */
+
+@media (max-width: 480px) {
+  .rubriques { grid-template-columns: 1fr; }
+  .rubrique { grid-template-areas: "num nom statut"; }
+  .rubrique-genre { display: none; }
+  .manchette-bas { flex-direction: column; align-items: center; row-gap: 0.15rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}
